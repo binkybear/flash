@@ -1,23 +1,18 @@
-# define
-
 export bin=/system/bin
-export mnt=/data/local/kali
+export mnt=/data/local/kali-armhf
 PRESERVED_PATH=$PATH
 export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
 export TERM=linux
 export HOME=/root
 export LOGNAME=root
 
-echo "Ending ssh server"
-chroot /data/local/kali /etc/init.d/ssh stop
-
-# set shmmax to 128mb -- this let bootkali know that kali is down
+# set shmmax to 128mb to free memory#
 
 sysctl -w kernel.shmmax=134217728
 
 #unmount everything
 
-echo "Shutting down Kali"
+echo "Shutting down Kali mounts"
 umount $mnt/dev/pts
 echo "unmounted pts"
 umount $mnt/dev
