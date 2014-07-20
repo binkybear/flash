@@ -20,7 +20,7 @@ run_program("/tmp/busybox", "mount", "/system");
 run_program("/tmp/busybox", "mount", "-o", "rw,remount", "/system", "/system");
 run_program("/tmp/busybox", "mount", "/data");
 run_program("/tmp/busybox", "mount", "-o", "rw,remount", "/", "/");
-ui_print("*Removing any old terminal/ssh applications... *");
+ui_print("*Removing any old terminal applications... *");
 delete("/system/app/Term.apk", "/system/app/com.android.term1.apk", "/system/app/com.android.term2.apk", 
 "/system/app/com.android.term3.apk", "/system/app/com.android.term4.apk", "/system/app/com.android.term5.apk", "/system/app/jackpal.androidterm.apk", 
 "/system/app/jackpal.androidterm-1.apk", "/system/app/jackpal.androidterm-2.apk", "/system/app/AndroidTerm.apk", 
