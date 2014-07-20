@@ -31,4 +31,4 @@ sysctl -w net.ipv4.ip_forward=1
 
 # BEGIN CHROOT#
 echo "Switching to kali..."
-chroot /data/local/arch /bin/bash
+chroot /data/local/kali-armhf /bin/bash
