@@ -24,6 +24,7 @@ else
 	echo "Generating ssh keys to connect to localhost chroot"
 	echo "Location should be /root/.ssh/id_rsa with new password"
 	chroot /data/local/kali-armhf "ssh-keygen -t rsa"
+fi
 }
 
 ######### LOAD KALI CHROOT WITH SSH ############
