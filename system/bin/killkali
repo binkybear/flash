@@ -6,6 +6,9 @@ export TERM=linux
 export HOME=/root
 export LOGNAME=root
 
+echo "Ending ssh server"
+chroot $mnt /etc/init.d/ssh stop
+
 # set shmmax to 128mb to free memory#
 
 sysctl -w kernel.shmmax=134217728

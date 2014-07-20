@@ -3,10 +3,10 @@ echo "Sleep for 20 seconds to allow mounting"
 sleep 20
 mount -o remount,rw -t yaffs2 /dev/block/mtdblock3 /system
 export bin=/system/bin
-export mnt=/data/local/kali
+export mnt=/data/local/kali-armhf
 PRESERVED_PATH=$PATH
 export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
-export TERM=linux
+export TERM=xterm-256color
 export HOME=/root
 export LOGNAME=root
 
