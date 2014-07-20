@@ -16,7 +16,7 @@ else
 fi
 }
 
-######### CHECK FOR SSH KEYS, CREAT IF NOT FOUND ############
+######### CHECK FOR SSH KEYS, CREATE IF NOT FOUND ############
 f_sshkeys(){
 if [ -e /data/local/kali-armhf/root/.ssh/id_rsa]; then
 	echo "SSH keys found"
