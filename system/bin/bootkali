@@ -23,7 +23,9 @@ if [ -e /data/local/kali-armhf/root/.ssh/id_rsa]; then
 else
 	echo "Generating ssh keys to connect to localhost chroot"
 	echo "Location should be /root/.ssh/id_rsa with new password"
-	chroot /data/local/kali-armhf "ssh-keygen -t rsa"
+	mkdir -p /data/local/kali-armhf/root/.ssh
+	cd /data/local/kali-armhf/root.ssh
+	"ssh-keygen -t rsa"
 fi
 }
 
