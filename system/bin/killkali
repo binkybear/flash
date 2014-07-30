@@ -6,16 +6,16 @@ export TERM=linux
 export HOME=/root
 export LOGNAME=root
 
-echo "Ending ssh server"
-chroot $mnt /etc/init.d/ssh stop
-
 # set shmmax to 128mb to free memory#
 
 sysctl -w kernel.shmmax=134217728
 
+echo "Shutting down SSH Server"
+chroot $mnt /etc/init.d/ssh stop
+
 #unmount everything
 
-echo "Shutting down Kali mounts"
+echo "Removing all Kali mounts"
 umount $mnt/dev/pts
 echo "unmounted pts"
 umount $mnt/dev
