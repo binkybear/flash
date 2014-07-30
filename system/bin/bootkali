@@ -16,7 +16,7 @@ else
 fi
 }
 
-######### CHECK FOR SSH KEYS, CREATE IF NOT FOUND ############
+######### CHECK FOR SSH KEYS, CONFIGURATION CREATE IF NOT FOUND ############
 f_sshkeys(){
 if [ -e "/data/local/kali-armhf/root/.ssh/id_rsa" ]; then
         echo "SSH keys found"
@@ -26,10 +26,38 @@ else
         cd /data/local/
         mkdir -p kali-armhf/root/.ssh
         chroot kali-armhf /usr/bin/ssh-keygen -t rsa
+        cat /data/local/kali-armhf/root/.ssh/id_rsa.pub >> /data/local/kali-armhf/root/.ssh/authorized_keys
+fi
+if [ -e "/data/local/kali-armhf/etc/ssh/local_chroot" ]; then
+		echo "SSH localhost configuration found"
+else
+	cat <<EOF > /data/local/kali-armhf/etc/ssh/local_chroot
+	Port 22
+	ListenAddress 127.0.0.1
+	HostKey /root/.ssh/id_rsa
+	ServerKeyBits 1024
+	LoginGraceTime 600
+	KeyRegenerationInterval 3600
+	PermitRootLogin yes
+	IgnoreRhosts yes
+	IgnoreUserKnownHosts yes
+	StrictModes yes
+	X11Forwarding no
+	PrintMotd yes
+	SyslogFacility AUTH
+	LogLevel INFO
+	RhostsAuthentication no
+	RhostsRSAAuthentication no
+	PasswordAuthentication no
+	PermitEmptyPasswords yes
+EOF
 fi
 }
 ######### LOAD KALI CHROOT WITH SSH ############
 f_boot(){
+
+# Detect if SSH server is already running and skips mounting again if it detects ssh server #
+
 if [[ $(ssh -q -o "BatchMode=yes" -i /data/local/kali-armhf/root/.ssh/id_rsa localhost echo ok 2>&1) != 'ok' ]]; then
 	mount -o remount,rw -t yaffs2 /dev/block/mtdblock3 /system
 	export bin=/system/bin
@@ -57,17 +85,22 @@ if [[ $(ssh -q -o "BatchMode=yes" -i /data/local/kali-armhf/root/.ssh/id_rsa loc
 	echo "nameserver 208.67.222.222" > $mnt/etc/resolv.conf
 	echo "nameserver 208.67.220.220" >> $mnt/etc/resolv.conf
 	echo "127.0.0.1 localhost" > $mnt/etc/hosts
+	echo "kali" > $mnt/proc/sys/kernel/hostname
 
 	# execute startup script
+	clear
 	echo "Starting SSH server..."
-	chroot $mnt /etc/init.d/ssh start
+	chroot $mnt/kali-armhf /usr/sbin/sshd -f /etc/ssh/local_chroot
 	ssh -i $mnt/root/.ssh/id_rsa localhost
-
 else
-	ssh -i $mnt/root/.ssh/id_rsa localhost
+	clear
+	echo "SSH detected running...connecting to Kali"
+	ssh -i /data/local/kali-armhf/root/.ssh/id_rsa localhost
 	fi
 }
-#########################
+
+######## STARTUP ##########
+
 f_checkroot
 f_sshkeys
 f_sshcheck
