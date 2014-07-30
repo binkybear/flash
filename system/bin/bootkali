@@ -46,7 +46,6 @@ else
 	PrintMotd yes
 	SyslogFacility AUTH
 	LogLevel INFO
-	RhostsAuthentication no
 	RhostsRSAAuthentication no
 	PasswordAuthentication no
 	PermitEmptyPasswords yes
@@ -90,7 +89,7 @@ if [[ $(ssh -q -o "BatchMode=yes" -i /data/local/kali-armhf/root/.ssh/id_rsa loc
 	# execute startup script
 	clear
 	echo "Starting SSH server..."
-	chroot $mnt/kali-armhf /usr/sbin/sshd -f /etc/ssh/local_chroot
+	chroot $mnt /usr/sbin/sshd -f /etc/ssh/local_chroot
 	ssh -i $mnt/root/.ssh/id_rsa localhost
 else
 	clear
