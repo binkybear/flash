@@ -25,6 +25,7 @@ else
         echo "Location should be /root/.ssh/id_rsa with new password"
         cd /data/local/
         mkdir -p kali-armhf/root/.ssh
+        mkdir -p kali-armhf/var/run/sshd
         chroot kali-armhf /usr/bin/ssh-keygen -t rsa
         cat /data/local/kali-armhf/root/.ssh/id_rsa.pub >> /data/local/kali-armhf/root/.ssh/authorized_keys
 fi
