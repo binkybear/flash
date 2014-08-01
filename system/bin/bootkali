@@ -26,7 +26,7 @@ else
         cd /data/local/
         mkdir -p kali-armhf/root/.ssh
         mkdir -p kali-armhf/var/run/sshd
-        chroot kali-armhf /usr/bin/ssh-keygen -t rsa
+        chroot kali-armhf /usr/bin/ssh-keygen -b 1024 -N '' -f ~/.ssh/id_rsa -t rsa -q
         cat /data/local/kali-armhf/root/.ssh/id_rsa.pub >> /data/local/kali-armhf/root/.ssh/authorized_keys
 fi
 if [ -e "/data/local/kali-armhf/etc/ssh/local_chroot" ]; then
@@ -44,7 +44,7 @@ else
 	IgnoreUserKnownHosts yes
 	StrictModes yes
 	X11Forwarding no
-	PrintMotd yes
+	PrintMotd no
 	SyslogFacility AUTH
 	LogLevel INFO
 	RhostsRSAAuthentication no
@@ -88,13 +88,13 @@ if [[ $(ssh -q -o "BatchMode=yes" -i /data/local/kali-armhf/root/.ssh/id_rsa loc
 	echo "kali" > $mnt/proc/sys/kernel/hostname
 
 	# execute startup script
-	clear
 	echo "Starting SSH server..."
+	clear
 	chroot $mnt /usr/sbin/sshd -f /etc/ssh/local_chroot
 	ssh -i $mnt/root/.ssh/id_rsa localhost
 else
-	clear
 	echo "SSH detected running...connecting to Kali"
+	clear
 	ssh -i /data/local/kali-armhf/root/.ssh/id_rsa localhost
 	fi
 }
