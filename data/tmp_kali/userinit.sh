@@ -32,6 +32,9 @@ echo "nameserver 8.8.4.4" >> $mnt/etc/resolv.conf
 echo "options single-request-reopen" >> resolv.conf
 echo "127.0.0.1 localhost" > $mnt/etc/hosts
 
+chmod 755 /system/bin/bootkali
+chmod 755 /system/bin/killkali
+
 # execute startup script
-echo "Starting SSH server..."
-chroot $mnt /etc/init.d/ssh start
+#echo "Starting SSH server..."
+#chroot $mnt /etc/init.d/ssh start
