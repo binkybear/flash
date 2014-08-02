@@ -16,16 +16,16 @@ else
 fi
 }
 
-######### CHECK FOR SSH KEYS, CONFIGURATION CREATE IF NOT FOUND ############
+######### CHECK FOR SSH KEYS, CHECK LOCAL SSH CONFIG, REMOVE PRIV ESC ERROR ############
 f_sshkeys(){
 if [ -e "/data/local/kali-armhf/root/.ssh/id_rsa" ]; then
         echo "SSH keys found"
 else
+		chroot "/bin/mkdir" "/var/run/sshd" 
         echo "Generating ssh keys to connect to localhost chroot"
         echo "Location should be /root/.ssh/id_rsa with new password"
         cd /data/local/
         mkdir -p kali-armhf/root/.ssh
-        mkdir -p kali-armhf/var/run/sshd
         chroot kali-armhf /usr/bin/ssh-keygen -b 1024 -N '' -f ~/.ssh/id_rsa -t rsa -q
         cat /data/local/kali-armhf/root/.ssh/id_rsa.pub >> /data/local/kali-armhf/root/.ssh/authorized_keys
 fi
@@ -51,6 +51,10 @@ else
 	PasswordAuthentication no
 	PermitEmptyPasswords yes
 EOF
+fi
+if [ ! -d /data/local/kali-armhf/var/run/sshd ]; then
+	chroot /data/local/kali-armhf "/bin/mkdir" "/var/run/sshd"
+	chroot /data/local/ "chmod" "0755" "/var/run/sshd"
 fi
 }
 ######### LOAD KALI CHROOT WITH SSH ############
