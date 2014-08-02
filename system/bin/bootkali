@@ -1,116 +1,39 @@
-
 #########  CHECK FOR ROOT ######### 
 f_checkroot(){
 perm=$(id|cut -b 5)
 if [ "$perm" != "0" ];then echo "ROOT NOT DETECTED! Type: su or install SuperSU to fix"; exit; fi
 }
 
-######### CHECK FOR /.ssh/ folder ############
-f_sshcheck(){
-if [ -d "/.ssh" ]; then
-    echo "Found /.ssh"
-else
-    echo "Creating folder /.ssh"
-    mount -o rw,remount -t yaffs2 /dev/block/mtdblock3 /
-    mkdir .ssh
-fi
-}
+#########  EXPORT ######### 
+mount -o remount,rw -t yaffs2 /dev/block/mtdblock3 /system
+export bin=/system/bin
+export mnt=/data/local/kali-armhf
+PRESERVED_PATH=$PATH
+export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
+export TERM=xterm-256color
+export HOME=/root
+export LOGNAME=root
 
-######### CHECK FOR SSH KEYS, CHECK LOCAL SSH CONFIG, REMOVE PRIV ESC ERROR ############
-f_sshkeys(){
-if [ -e "/data/local/kali-armhf/root/.ssh/id_rsa" ]; then
-        echo "SSH keys found"
-else
-        echo "Generating ssh keys to connect to localhost chroot"
-        echo "Location should be /root/.ssh/id_rsa with new password"
-        chroot /data/local/kali-armhf "/usr/bin/ssh-keygen" -b 1024 -N '' -f /root/.ssh/id_rsa -t rsa -q
-        cat /data/local/kali-armhf/root/.ssh/id_rsa.pub >> /data/local/kali-armhf/root/.ssh/authorized_keys
-        chroot /data/local/kali-armhf "/bin/chmod" "600" "/root/.ssh/authorized_keys"
-        if [ -e "/data/.ssh/known_hosts" ]; then
-        cp /data/.ssh/known_hosts /data/.ssh/known_hosts.bak
-        echo "Backed up /data/.ssh to /data/.ssh/known_host.bak"
-        rm -rf /data/.ssh/known_hosts
-        fi
-fi
-
-if [ -e "/data/local/kali-armhf/etc/ssh/local_chroot" ]; then
-		echo "SSH localhost configuration found"
-else
-	cat <<EOF > /data/local/kali-armhf/etc/ssh/local_chroot
-	Port 22
-	ListenAddress 127.0.0.1
-	HostKey /root/.ssh/id_rsa
-	ServerKeyBits 1024
-	LoginGraceTime 600
-	KeyRegenerationInterval 3600
-	PermitRootLogin yes
-	IgnoreRhosts yes
-	IgnoreUserKnownHosts yes
-	StrictModes yes
-	X11Forwarding no
-	PrintMotd no
-	SyslogFacility AUTH
-	LogLevel INFO
-	RhostsRSAAuthentication no
-	PasswordAuthentication no
-	PermitEmptyPasswords yes
-EOF
-fi
-
-if [ ! -d /data/local/kali-armhf/var/run/sshd ]; then
-	chroot /data/local/kali-armhf /etc/init.d/ssh start
-	chroot /data/local/kali-armhf /etc/init.d/ssh stop
-fi
-}
-######### LOAD KALI CHROOT WITH SSH ############
-f_boot(){
-
-# Detect if SSH server is already running and skips mounting again if it detects ssh server #
-
-if [[ $(ssh -q -o "BatchMode=yes" -i /data/local/kali-armhf/root/.ssh/id_rsa localhost echo ok 2>&1) != 'ok' ]]; then
-	mount -o remount,rw -t yaffs2 /dev/block/mtdblock3 /system
-	export bin=/system/bin
-	export mnt=/data/local/kali-armhf
-	PRESERVED_PATH=$PATH
-	export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
-	export TERM=xterm-256color
-	export HOME=/root
-	export LOGNAME=root
-
-	mount -o bind /system $mnt/system
-	mount -o bind /sdcard $mnt/sdcard
-	mount -o bind /dev $mnt/dev
-	mount -t devpts devpts $mnt/dev/pts
-	mount -t proc proc $mnt/proc
-	mount -t sysfs sysfs $mnt/sys
+#########  MOUNT ######### 
+mount -o bind /system $mnt/system
+mount -o bind /sdcard $mnt/sdcard
+mount -o bind /dev $mnt/dev
+mount -t devpts devpts $mnt/dev/pts
+mount -t proc proc $mnt/proc
+mount -t sysfs sysfs $mnt/sys
 	
-	chmod 666 /dev/null
+chmod 666 /dev/null
 
-	f_sshcheck
-	f_sshkeys
+# SET 250MB TO ALLOW POSTGRESQL #
+sysctl -w kernel.shmmax=268435456
 
-	# SET 250MB TO ALLOW POSTGRESQL #
-	sysctl -w kernel.shmmax=268435456
+# NETWORK SETTINGS #
+sysctl -w net.ipv4.ip_forward=1
+echo "nameserver 208.67.222.222" > $mnt/etc/resolv.conf
+echo "nameserver 208.67.220.220" >> $mnt/etc/resolv.conf
+cho "127.0.0.1 localhost" > $mnt/etc/hosts
+echo "kali" > $mnt/proc/sys/kernel/hostname
 
-	# NETWORK SETTINGS #
-	sysctl -w net.ipv4.ip_forward=1
-	echo "nameserver 208.67.222.222" > $mnt/etc/resolv.conf
-	echo "nameserver 208.67.220.220" >> $mnt/etc/resolv.conf
-	echo "127.0.0.1 localhost" > $mnt/etc/hosts
-	echo "kali" > $mnt/proc/sys/kernel/hostname
-
-	# execute startup script
-	echo "Starting SSH server..."
-	clear
-	chroot $mnt /usr/sbin/sshd -f /etc/ssh/local_chroot
-	ssh -i $mnt/root/.ssh/id_rsa localhost
-else
-	echo "SSH detected running...connecting to Kali"
-	clear
-	ssh -i /data/local/kali-armhf/root/.ssh/id_rsa localhost
-fi
-}
-
-######## STARTUP ##########
-f_checkroot
-f_boot
+# execute startup script
+clear
+chroot $mnt /bin/bash -l

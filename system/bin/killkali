@@ -11,6 +11,7 @@ export LOGNAME=root
 sysctl -w kernel.shmmax=134217728
 
 echo "Shutting down SSH Server"
+chmod 666 /dev/null
 chroot $mnt /etc/init.d/ssh stop
 
 #unmount everything
