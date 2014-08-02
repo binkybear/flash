@@ -1,4 +1,4 @@
-MNT=
+
 #########  CHECK FOR ROOT ######### 
 f_checkroot(){
 perm=$(id|cut -b 5)
@@ -22,14 +22,18 @@ f_sshkeys(){
 if [ -e "/data/local/kali-armhf/root/.ssh/id_rsa" ]; then
         echo "SSH keys found"
 else
-		chroot "/bin/mkdir" "/var/run/sshd" 
         echo "Generating ssh keys to connect to localhost chroot"
         echo "Location should be /root/.ssh/id_rsa with new password"
-        cd /data/local/
-        mkdir -p kali-armhf/root/.ssh
-        chroot kali-armhf /usr/bin/ssh-keygen -b 1024 -N '' -f ~/.ssh/id_rsa -t rsa -q
+        chroot /data/local/kali-armhf "/usr/bin/ssh-keygen" -b 1024 -N '' -f /root/.ssh/id_rsa -t rsa -q
         cat /data/local/kali-armhf/root/.ssh/id_rsa.pub >> /data/local/kali-armhf/root/.ssh/authorized_keys
+        chroot /data/local/kali-armhf "/bin/chmod" "600" "/root/.ssh/authorized_keys"
+        if [ -e "/data/.ssh/known_hosts" ]; then
+        cp /data/.ssh/known_hosts /data/.ssh/known_hosts.bak
+        echo "Backed up /data/.ssh to /data/.ssh/known_host.bak"
+        rm -rf /data/.ssh/known_hosts
+        fi
 fi
+
 if [ -e "/data/local/kali-armhf/etc/ssh/local_chroot" ]; then
 		echo "SSH localhost configuration found"
 else
@@ -53,9 +57,10 @@ else
 	PermitEmptyPasswords yes
 EOF
 fi
+
 if [ ! -d /data/local/kali-armhf/var/run/sshd ]; then
-	chroot /data/local/kali-armhf "/bin/mkdir" "/var/run/sshd"
-	chroot /data/local/kali-armhf "/bin/chmod" "0755" "/var/run/sshd"
+	chroot /data/local/kali-armhf /etc/init.d/ssh start
+	chroot /data/local/kali-armhf /etc/init.d/ssh stop
 fi
 }
 ######### LOAD KALI CHROOT WITH SSH ############
