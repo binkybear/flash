@@ -3,6 +3,15 @@
 f_checkroot(){
 perm=$(id|cut -b 5)
 if [ "$perm" != "0" ];then echo "ROOT NOT DETECTED! Type: su or install SuperSU to fix"; exit; fi
+
+######### MOUNT NECESSARY FOLDERS #########
+
+mount -o bind /system $mnt/system
+mount -o bind /sdcard $mnt/sdcard
+mount -o bind /dev $mnt/dev
+mount -t devpts devpts $mnt/dev/pts
+mount -t proc proc $mnt/proc
+mount -t sysfs sysfs $mnt/sys
 chmod 666 /dev/null
 }
 
@@ -77,15 +86,6 @@ if [[ $(ssh -q -o "BatchMode=yes" -i /data/local/kali-armhf/root/.ssh/id_rsa loc
 	export TERM=xterm-256color
 	export HOME=/root
 	export LOGNAME=root
-
-	# MOUNT NECESSARY FOLDERS #
-
-	mount -o bind /system $mnt/system
-	mount -o bind /sdcard $mnt/sdcard
-	mount -o bind /dev $mnt/dev
-	mount -t devpts devpts $mnt/dev/pts
-	mount -t proc proc $mnt/proc
-	mount -t sysfs sysfs $mnt/sys
 
 	# SET 250MB TO ALLOW POSTGRESQL #
 	sysctl -w kernel.shmmax=268435456
