@@ -3,9 +3,10 @@
 f_checkroot(){
 perm=$(id|cut -b 5)
 if [ "$perm" != "0" ];then echo "ROOT NOT DETECTED! Type: su or install SuperSU to fix"; exit; fi
+}
 
 ######### MOUNT NECESSARY FOLDERS #########
-
+f_mount(){
 mount -o bind /system $mnt/system
 mount -o bind /sdcard $mnt/sdcard
 mount -o bind /dev $mnt/dev
@@ -111,6 +112,7 @@ fi
 
 ######## STARTUP ##########
 f_checkroot
-f_sshkeys
+f_mount
 f_sshcheck
+f_sshkeys
 f_boot
