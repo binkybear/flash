@@ -2,8 +2,8 @@
 #########  CHECK FOR ROOT ######### 
 f_checkroot(){
 perm=$(id|cut -b 5)
-
-if [ "$perm" != "0" ];then echo "This requires root! Type: su or install SuperSU to fix"; exit; fi
+if [ "$perm" != "0" ];then echo "ROOT NOT DETECTED! Type: su or install SuperSU to fix"; exit; fi
+chmod 666 /dev/null
 }
 
 ######### CHECK FOR /.ssh/ folder ############
@@ -110,7 +110,6 @@ fi
 }
 
 ######## STARTUP ##########
-
 f_checkroot
 f_sshkeys
 f_sshcheck
