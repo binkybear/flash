@@ -1,3 +1,4 @@
+MNT=
 #########  CHECK FOR ROOT ######### 
 f_checkroot(){
 perm=$(id|cut -b 5)
@@ -54,7 +55,7 @@ EOF
 fi
 if [ ! -d /data/local/kali-armhf/var/run/sshd ]; then
 	chroot /data/local/kali-armhf "/bin/mkdir" "/var/run/sshd"
-	chroot /data/local/ "chmod" "0755" "/var/run/sshd"
+	chroot /data/local/kali-armhf "/bin/chmod" "0755" "/var/run/sshd"
 fi
 }
 ######### LOAD KALI CHROOT WITH SSH ############
@@ -100,7 +101,7 @@ else
 	echo "SSH detected running...connecting to Kali"
 	clear
 	ssh -i /data/local/kali-armhf/root/.ssh/id_rsa localhost
-	fi
+fi
 }
 
 ######## STARTUP ##########
