@@ -11,7 +11,7 @@ export HOME=/root
 export LOGNAME=root
 
 # mount to Kali chroot
-echo "mounting..."
+echo "mounting kali..."
 
 mount -o bind /system $mnt/system
 mount -o bind /sdcard $mnt/sdcard
@@ -40,9 +40,13 @@ chmod 755 /system/bin/bootkali
 chmod 755 /system/bin/killkali
 
 if [ -e "$mnt/root/.firstrun.option" ]; then
-	chroot $mnt source /root/.firstrun.option
-	if [ $sshonboot == "1"]; then service ssh start fi
-	if [ $vnconboot == "1"]; then rm -rf ~/.vnc/*.pid && vncserver -geometry $RES -depth 24 $VNCLISTEN
-	fi
-	exit
+        source $mnt/root/.firstrun.option
+        if [ $sshonboot == "1" ]; then
+			chroot $mnt service ssh start 
+        fi
+        if [ $vnconboot == "1" ]; then
+        	# remove old vnc servers so we can always start on display :1
+        	rm -rf $mnt/tmp/.X1* && rm -rf $mnt/root/.vnc/*.pid && rm -rf $mnt/root/.vnc/*.log
+            chroot $mnt su -c "vncserver -geometry ${RES} -depth 24 ${VNCLISTEN}" root
+        fi
 fi
