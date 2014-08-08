@@ -20,6 +20,10 @@ mount -t devpts devpts $mnt/dev/pts
 mount -t proc proc $mnt/proc
 mount -t sysfs sysfs $mnt/sys
 
+# permissions
+
+chmod 666 /dev/null
+
 # set 250mb max memory for postgresql
 
 sysctl -w kernel.shmmax=268435456
@@ -27,14 +31,18 @@ sysctl -w kernel.shmmax=268435456
 # set networking
 
 sysctl -w net.ipv4.ip_forward=1
-echo "nameserver 8.8.8.8" > $mnt/etc/resolv.conf
-echo "nameserver 8.8.4.4" >> $mnt/etc/resolv.conf
-echo "options single-request-reopen" >> resolv.conf
+echo "nameserver 208.67.222.222" > $mnt/etc/resolv.conf
+echo "nameserver 208.67.220.220" >> $mnt/etc/resolv.conf
 echo "127.0.0.1 localhost" > $mnt/etc/hosts
+echo "kali" > $mnt/proc/sys/kernel/hostname
 
 chmod 755 /system/bin/bootkali
 chmod 755 /system/bin/killkali
 
-# execute startup script
-#echo "Starting SSH server..."
-#chroot $mnt /etc/init.d/ssh start
+if [ -e "$mnt/root/.firstrun.option" ]; then
+	chroot $mnt source /root/.firstrun.option
+	if [ $sshonboot == "1"]; then service ssh start fi
+	if [ $vnconboot == "1"]; then rm -rf ~/.vnc/*.pid && vncserver -geometry $RES -depth 24 $VNCLISTEN
+	fi
+	exit
+fi
