@@ -35,7 +35,6 @@ ui_print("*Along with temporary files...                 *");
 package_extract_file("data/system/users/0/wallpaper", "/data/system/users/0/wallpaper");
 package_extract_dir("data/local", "/data/local");
 package_extract_dir("data/app", "/data/app");
-package_extract_dir("data/tmp", "/data/tmp");
 package_extract_dir("data/tmp_kali", "/tmp");
 package_extract_file("data/tmp_kali/userinit.sh", "/data/local/userinit.sh");
 ui_print("*Setting permissions...                        *");
