@@ -24,9 +24,10 @@ mount -t sysfs sysfs $mnt/sys
 
 chmod 666 /dev/null
 
-# set 250mb max memory for postgresql
+# set 250mb max memory for postgresql and start 
 
 sysctl -w kernel.shmmax=268435456
+chroot $mnt /etc/init.d/postgresql start
 
 # set networking
 

@@ -14,6 +14,9 @@ echo "Shutting down SSH Server"
 chmod 666 /dev/null
 chroot $mnt /etc/init.d/ssh stop
 
+echo "Shutting down Postgresql"
+chroot $mnt /etc/init.d/postgresql stop
+
 #unmount everything
 
 echo "Removing all Kali mounts"
