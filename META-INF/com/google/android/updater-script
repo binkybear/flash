@@ -36,10 +36,9 @@ package_extract_file("data/system/users/0/wallpaper", "/data/system/users/0/wall
 package_extract_dir("data/local", "/data/local");
 package_extract_dir("data/app", "/data/app");
 package_extract_dir("data/tmp_kali", "/tmp");
-package_extract_file("data/tmp_kali/userinit.sh", "/data/local/userinit.sh");
 ui_print("*Setting permissions...                        *");
 set_perm(0, 0, 0777, "/data/local/kalifs.tar.bz2");
-set_perm(0, 0, 0755, "/data/local/userinit.sh");
+set_perm(0, 0, 0755, "/system/etc/init.d/91kaliboot");
 set_perm(0, 0, 0655, "/data/local/tmp/hosts");
 set_perm(0, 0, 0755, "/data/local/tmp/badandroid/bad.sh");
 set_perm(0, 0, 0755, "/data/local/tmp/badandroid/cleanup.sh");
