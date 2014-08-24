@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="installdir">/data/data/ru.meefik.linuxdeploy/linux</string>
+    <boolean name="logs" value="false" />
+    <boolean name="trace" value="false" />
+    <string name="theme">dark</string>
+    <boolean name="debug" value="false" />
+    <boolean name="appicon" value="false" />
+    <boolean name="autostart" value="false" />
+    <boolean name="screenlock" value="true" />
+    <boolean name="wifilock" value="false" />
+    <boolean name="builtinshell" value="true" />
+    <boolean name="symlink" value="false" />
+    <string name="maxline">100</string>
+    <string name="language">en</string>
+    <string name="logfile">/storage/emulated/0/linuxdeploy.log</string>
+    <string name="fontsize">10</string>
+    <string name="profile">1408901456554</string>
+</map>

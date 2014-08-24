@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="guitype">vnc</string>
+    <string name="serverdns"></string>
+    <string name="desktopenv">xfce</string>
+    <string name="locale">en_US.UTF-8</string>
+    <string name="deploytype">custom</string>
+    <string name="sshport">22</string>
+    <string name="architecture">armhf</string>
+    <string name="distribution">kali</string>
+    <boolean name="custommounts" value="false" />
+    <string name="mirror">http://http.kali.org/kali</string>
+    <string name="diskimage">/data/local/kali-armhf</string>
+    <string name="username">root</string>
+    <string name="fstype">auto</string>
+    <boolean name="customstartup" value="false" />
+    <string name="disksize">0</string>
+    <boolean name="sshstartup" value="true" />
+    <boolean name="guistartup" value="true" />
+    <string name="suite">kali</string>
+    <set name="xcomponents">
+        <string>desktop</string>
+        <string>vnc</string>
+        <string>ssh</string>
+    </set>
+</map>
